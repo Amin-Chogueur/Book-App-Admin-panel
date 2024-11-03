@@ -1,68 +1,33 @@
 "use client";
-import axios from "axios";
 
-import { useEffect, useState } from "react";
-type CategoryType = {
-  _id: string;
-  name: string;
-};
+import { useEffect } from "react";
+import { useBookContext } from "./context/BookContext";
 
-type Book = {
-  title: string;
-  description: string;
-  price: string;
-  _id: string;
-  image: string;
-  quantity: number;
-  category: CategoryType;
-  auther: string;
-};
 export default function Home() {
-  const [username, setUsername] = useState("");
-  const [books, setBooks] = useState<Book[]>();
-  const [isLoading, setIsLoading] = useState(false);
-  async function getname() {
-    try {
-      setIsLoading(true);
-      const res = await axios.get("/api/signup");
-      const { username } = res.data[0];
-      setUsername(username);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-  async function getAllBooks() {
-    try {
-      const res = await axios.get("/api/books");
-      const books = res.data;
-      setBooks(books);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  const { books, loading, username, getAllCategories, getAllBooks } =
+    useBookContext();
+
   const totalBooks = books?.reduce((acu, cur) => acu + cur.quantity, 0);
   const totalBooksPrice = books?.reduce(
     (acu, cur) => acu + cur.quantity * Number(cur.price),
     0
   );
   useEffect(() => {
-    getname();
     getAllBooks();
+    getAllCategories();
   }, []);
   return (
     <div className="bg-black text-white px-5 pt-5 pb-10 min-h-[100vh]">
       <h1 className=" text-2xl my-10 text-center">
         Welcome {username} in Your Library{" "}
       </h1>
-      {isLoading ? (
+      {loading ? (
         <h3 className="text-2xl text-center p-5">Loading...</h3>
       ) : (
         <table className="border max-w-[95%] mx-auto p-4 overflow-scroll">
           <thead className="text-teal-600 text-center">
             <tr className="p-4 border">
-              <td className="p-4 border">Title</td>
+              <td className="p-4 border">Book Title</td>
               <td className="p-4 border">Category</td>
               <td className="p-4 border">Auther</td>
               <td className="p-4 border">Price</td>

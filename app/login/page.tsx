@@ -3,6 +3,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 export default function Login() {
   const route = useRouter();
 
@@ -14,11 +15,14 @@ export default function Login() {
     e.preventDefault();
     try {
       const res = await axios.post("/api/login", userInfo);
+      toast.success(res.data.message);
       console.log(res.data);
       route.push("/");
       window.location.reload();
     } catch (error: any) {
-      console.log(error.message);
+      if (error.response.data.message) {
+        toast.error(error.response.data.message);
+      }
     }
   }
   return (

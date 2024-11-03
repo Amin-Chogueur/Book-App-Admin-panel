@@ -30,12 +30,12 @@ export async function DELETE(
     const { bookId } = params;
     const res = await Book.findByIdAndDelete(bookId);
     return NextResponse.json(
-      { message: "user deleted successfuly" },
+      { message: "Book deleted successfuly" },
       { status: 200 }
     );
   } catch (error) {
     return NextResponse.json(
-      { err: "error while delete user" },
+      { err: "error while delete Book" },
       { status: 500 }
     );
   }
@@ -48,15 +48,23 @@ export async function PATCH(
   try {
     const { bookId } = params;
     const book = await req.json();
+    const { title } = book;
+    const existBook = await Book.findOne({ title });
+    if (existBook) {
+      return NextResponse.json(
+        { message: "Book Alraedy exists" },
+        { status: 400 }
+      );
+    }
     await Book.findByIdAndUpdate(bookId, book);
     return NextResponse.json(
-      { message: "user updated successfuly" },
+      { message: "Book updated successfuly" },
       { status: 200 }
     );
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-      { message: "error when update user" },
+      { message: "error when update Book" },
       { status: 500 }
     );
   }

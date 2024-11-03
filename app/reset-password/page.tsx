@@ -34,8 +34,8 @@ export default function ResetPasswordPage() {
   return (
     <div className="flex flex-col  justify-center gap-3 w-[300px] mx-auto my-[100px] text-center">
       <h2>Reset Password</h2>
-      {message && <p>{message}</p>}
-      {error && <p>{error}</p>}
+      {message && <p className="text-red-600 text-lg">{message}</p>}
+      {error && <p className="text-red-600 text-lg">{error}</p>}
       <form
         onSubmit={handleSubmit}
         className="flex flex-col  justify-center gap-3"

@@ -1,60 +1,24 @@
 "use client";
-import axios from "axios";
-import Image from "next/image";
+
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
-type CategoryType = {
-  _id: string;
-  name: string;
-};
+import Book from "../components/Book";
 
-type Book = {
-  title: string;
-  description: string;
-  price: string;
-  _id: string;
-  image: string;
-  quantity: number;
-  category: CategoryType;
-  auther: string;
-};
+import { useBookContext } from "../context/BookContext";
 
 export default function Books() {
-  const [loading, setLoading] = useState(false);
-  const [books, setBooks] = useState<Book[]>([]);
+  const { loading, books, getAllBooks, getAllCategories } = useBookContext();
+
   const [filter, setFilter] = useState("");
-
-  async function getAllCategories() {
-    try {
-      const res = await axios.get("/api/categories");
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async function getAllBooks() {
-    try {
-      setLoading(true);
-      const res = await axios.get("/api/books");
-      const books = res.data;
-      setBooks(books);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   const booksFiltered = books.filter(
     (book) =>
       book.title.toLowerCase().includes(filter.toLowerCase()) ||
       book.category?.name.toLowerCase().includes(filter.toLowerCase())
   );
-
   useEffect(() => {
-    getAllBooks();
-    getAllCategories();
+    getAllBooks(), getAllCategories();
   }, []);
   return (
     <div className="bg-black text-white p-4  min-h-full ">
@@ -81,54 +45,7 @@ export default function Books() {
       ) : books.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-5 text-left capitalize">
           {booksFiltered.length > 0 ? (
-            booksFiltered?.map((book, i) => (
-              <Link
-                href={`/books/${book._id}`}
-                key={i}
-                className={`rounded border mt-4`}
-              >
-                <div className="">
-                  <Image
-                    src={book.image}
-                    alt="image"
-                    width={250}
-                    height={200}
-                    className="m-auto mb-3"
-                  />
-                  <h3 className="text-center text-teal-500">{book.title}</h3>
-                </div>
-                <div className="p-2 flex-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3>
-                      <span className="text-teal-500 ">Category:</span>{" "}
-                      {book.category?.name}
-                    </h3>
-                  </div>
-
-                  <p className="mb-2">
-                    <span className="text-teal-500 ">Description :</span>{" "}
-                    {book.description.slice(0, 150)}...
-                  </p>
-
-                  <h3>
-                    <span className="text-teal-500 ">Auther :</span>{" "}
-                    {book.auther}
-                  </h3>
-
-                  <div className="flex items-center justify-between mt-2">
-                    {" "}
-                    <h3>
-                      <span className="text-teal-500 ">Price :</span>{" "}
-                      {book.price} DA
-                    </h3>
-                    <h3>
-                      <span className="text-teal-500 ">Quantiy :</span>{" "}
-                      {book.quantity}
-                    </h3>
-                  </div>
-                </div>
-              </Link>
-            ))
+            booksFiltered?.map((book, i) => <Book key={i} book={book} />)
           ) : (
             <h2 className=" text-center text-2xl ">
               There is no book match this title or auther name!

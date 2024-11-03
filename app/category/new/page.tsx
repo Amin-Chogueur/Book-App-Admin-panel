@@ -1,26 +1,15 @@
 "use client";
-import axios from "axios";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useBookContext } from "@/app/context/BookContext";
+import React from "react";
 
 export default function NewCategory() {
-  const route = useRouter();
-  const [name, setName] = useState("");
-  async function handleSubmit(e: any) {
-    e.preventDefault();
-    try {
-      const res = await axios.post("/api/categories", { name });
-      route.push("/category");
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  const { name, setName, handleSubmitNewCategory } = useBookContext();
+
   return (
     <div className="text-center">
       <h1 className="text-teal-600 my-3 p-4 text-2xl ">Create New Category</h1>
 
-      <form className="p-4" onSubmit={handleSubmit}>
+      <form className="p-4" onSubmit={handleSubmitNewCategory}>
         <input
           type="text"
           placeholder="Category name..."

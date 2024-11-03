@@ -1,69 +1,12 @@
 "use client";
-import axios from "axios";
-import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ImageUpload from "@/app/components/ImageUpload";
+import { useBookContext } from "@/app/context/BookContext";
 
-type FormDataType = {
-  title: string;
-  description: string;
-  price: string;
-  category: string;
-  image: string;
-  quantity: number;
-  auther: string;
-};
-
-type CategoryType = {
-  _id: string;
-  name: string;
-};
-
-export default function NewUser() {
-  const route = useRouter();
-  const [categories, setCategories] = useState<CategoryType[]>([]);
-  const [formData, setFormData] = useState<FormDataType>({
-    title: "",
-    description: "",
-    price: "",
-    auther: "",
-    category: "",
-    image: "",
-    quantity: 0,
-  });
-
-  async function getCategories() {
-    try {
-      const res = await axios.get("/api/categories");
-      setCategories(res.data); // Assuming the response is an array of categories
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    try {
-      console.log(formData);
-      const res = await axios.post("/api/books", formData);
-      console.log(res.data);
-      route.push("/books");
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setFormData({
-        title: "",
-        description: "",
-        price: "",
-        auther: "",
-        category: "",
-        image: "",
-        quantity: 0,
-      });
-    }
-  }
+export default function NewBook() {
+  const { categories, handleSubmitNewBook, formData, setFormData } =
+    useBookContext();
 
   const handleImageUpload = (url: string) => {
     setFormData((prevFormData) => ({
@@ -75,12 +18,9 @@ export default function NewUser() {
   const handleRemoveImage = () => {
     setFormData((prevFormData) => ({
       ...prevFormData,
-      image: "", // Clear the image URL
+      image: "",
     }));
   };
-  useEffect(() => {
-    getCategories();
-  }, []);
 
   return (
     <div className="bg-black text-white p-6  min-h-full">
@@ -88,7 +28,7 @@ export default function NewUser() {
         Create New Book
       </h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmitNewBook}>
         <div className="flex flex-col lg:flex-row lg:justify-between">
           <div className="w-[90%] mx-auto lg:mx-0 flex flex-col lg:w-[50%]">
             <input

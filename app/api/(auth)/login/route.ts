@@ -13,14 +13,14 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json(
-        { error: "User doesn't exist" },
+        { message: "User doesn't exist" },
         { status: 404 }
       );
     }
 
     const validPassword = await bcryptjs.compare(password, user.password);
     if (!validPassword) {
-      return NextResponse.json({ error: "Wrong password" }, { status: 401 });
+      return NextResponse.json({ message: "Wrong password" }, { status: 400 });
     }
 
     const tokenData = {

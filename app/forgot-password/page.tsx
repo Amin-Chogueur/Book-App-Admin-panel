@@ -25,8 +25,8 @@ export default function ForgotPasswordPage() {
   return (
     <div className="flex flex-col  justify-center gap-3 w-[300px] mx-auto my-[100px] text-center">
       <h2>Forgot Password</h2>
-      {message && <p>{message}</p>}
-      {error && <p>{error}</p>}
+      {message && <p className="text-red-600 text-lg">{message}</p>}
+      {error && <p className="text-red-600 text-lg">{error}</p>}
       <form
         onSubmit={handleSubmit}
         className="flex flex-col  justify-center gap-3"
@@ -43,7 +43,7 @@ export default function ForgotPasswordPage() {
           Send Reset Link
         </button>
         <p>
-          you rememebr the password ?{" "}
+          you remember the password ?{" "}
           <Link href={"/login"} className=" underline text-teal-600">
             Login
           </Link>

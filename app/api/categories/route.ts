@@ -17,10 +17,20 @@ export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
     const { name } = data;
-    console.log(name);
+
+    const existingCategory = await Category.findOne({ name });
+    if (existingCategory) {
+      return NextResponse.json(
+        { message: "Category already exists" },
+        { status: 400 }
+      );
+    }
     const newCategory = new Category({ name });
     await newCategory.save();
-    return NextResponse.json("category created successfely", { status: 200 });
+    return NextResponse.json(
+      { message: "category created successfely" },
+      { status: 200 }
+    );
   } catch (error) {
     console.log(error);
     return NextResponse.json("error when creating new category", {

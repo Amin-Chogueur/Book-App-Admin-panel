@@ -1,46 +1,14 @@
 "use client";
-import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
-type Book = {
-  username: string;
-  email: string;
-  password: string;
-  gender: string;
-  _id: string;
-  category: Categories;
-  colors: string[];
-};
-
-interface Categories {
-  _id: string;
-  name: string;
-}
+import { useBookContext } from "../context/BookContext";
 
 export default function Categories() {
+  const { categories, getAllCategories, books, getAllBooks } = useBookContext();
   const route = useRouter();
-  const [categories, setCategories] = useState<Categories[]>([]);
-  const [books, setBooks] = useState<Book[]>();
   const [filter, setFilter] = useState("");
-  async function getAllBooks() {
-    try {
-      const res = await axios.get("/api/books");
-      setBooks(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  async function getAllCategories() {
-    try {
-      const res = await axios.get("/api/categories");
-      const categoreis = res.data;
-      setCategories(categoreis);
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   const filteredcategory = categories.filter((category) =>
     category.name.toLowerCase().includes(filter.toLowerCase())

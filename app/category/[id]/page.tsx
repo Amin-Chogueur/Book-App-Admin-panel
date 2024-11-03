@@ -1,45 +1,16 @@
 "use client";
-import axios from "axios";
-import Link from "next/link";
+import { useBookContext } from "@/app/context/BookContext";
+
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 function Category({ params }: { params: { id: string } }) {
   const route = useRouter();
   const { id } = params;
-  const [category, setCategory] = useState({ _id: "", name: "" });
+  const { category, setCategory, getCategory, UpdateCategory, deleteCategory } =
+    useBookContext();
   const [iseUpdate, setIsUpdate] = useState(false);
-  async function getCategory() {
-    try {
-      const res = await axios.get(`/api/categories/${id}`);
-      setCategory(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async function handleUpdate() {
-    try {
-      const res = await axios.post(`/api/categories/${id}`, category);
-      console.log(res.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsUpdate(false);
-      route.push("/category");
-    }
-  }
-  async function deleteCategory() {
-    try {
-      const res = await axios.delete(`/api/categories/${id}`);
-      console.log(res.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      route.push("/category");
-    }
-  }
   useEffect(() => {
-    getCategory();
+    getCategory(id);
   }, []);
   return (
     <>
@@ -65,7 +36,7 @@ function Category({ params }: { params: { id: string } }) {
         {iseUpdate ? (
           <button
             className="p-1 rounded bg-teal-600"
-            onClick={() => handleUpdate()}
+            onClick={() => UpdateCategory(id)}
           >
             Done
           </button>
@@ -80,7 +51,7 @@ function Category({ params }: { params: { id: string } }) {
 
         <button
           className="p-1 rounded bg-red-600"
-          onClick={() => deleteCategory()}
+          onClick={() => deleteCategory(id)}
         >
           Delete
         </button>

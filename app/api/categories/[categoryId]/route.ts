@@ -1,7 +1,7 @@
 import { connectToDB } from "@/app/lib/connectDB";
 import Category from "@/app/lib/models/categoryModel";
 import { NextRequest, NextResponse } from "next/server";
-import { ObjectId } from "mongodb";
+
 connectToDB();
 
 export async function GET(
@@ -25,9 +25,17 @@ export async function POST(
   const { categoryId } = params;
   try {
     const newCategory = await req.json();
+    const { name } = newCategory;
+    const existCategory = await Category.findOne({ name });
+    if (existCategory) {
+      return NextResponse.json(
+        { message: "Category alraedy exists" },
+        { status: 400 }
+      );
+    }
     const res = await Category.findByIdAndUpdate(categoryId, newCategory);
     return NextResponse.json(
-      { message: "user updated successfuly" },
+      { message: "Category updated successfuly" },
       { status: 200 }
     );
   } catch (error) {
@@ -44,7 +52,7 @@ export async function DELETE(
     const { categoryId } = params;
     await Category.findByIdAndDelete(categoryId);
     return NextResponse.json(
-      { message: "user deleted successfuly" },
+      { message: "Category deleted successfuly" },
       { status: 200 }
     );
   } catch (error) {
